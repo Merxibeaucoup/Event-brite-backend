@@ -11,6 +11,7 @@ import com.edgar.clone.eventbrite.models.user.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -56,18 +57,15 @@ public class Event {
 	@CreationTimestamp
 	private LocalDateTime dateCreated;
 	
-	@NotNull
-	@OneToOne(cascade = CascadeType.ALL)
+	@Embedded
 	private Venue eventVenue;
 	
-	@NotNull
-	@OneToOne(cascade = CascadeType.ALL)
+	@Embedded
 	private Dates eventDateAndTime;
 	
-	@NotNull
-	@OneToOne(cascade = CascadeType.ALL)
-	private Ticket eventTicket;
-		
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "event")
+	private Ticket eventTicket;		
 		
 	@ManyToOne
 	private User organizer;

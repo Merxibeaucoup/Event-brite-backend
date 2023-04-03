@@ -1,0 +1,27 @@
+package com.edgar.clone.eventbrite.enums;
+
+public enum EventCategory {
+	
+	AUTO,
+	BUSINESS,
+	CHARITY,
+	COMMUNITY,
+	CULTURE,
+	FAMILY,
+	EDUCATION,
+	MEDIA,
+	FOOD,
+	POLITICS,
+	HEALTH,
+	HOBBIES,
+	HOME,
+	MUSIC,
+	OTHER,
+	RELIGION,
+	SCHOOL,
+	SCIENCE,
+	TECHNOLOGY,
+	SPORTS,
+	TRAVEL
+
+}

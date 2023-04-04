@@ -17,11 +17,14 @@ public class EventService {
 	private EventRepository eventRepo;
 	
 	
-	public Event createEvent(Event event, User user) {
-		
+	public Event createEvent(Event event, User user) {		
 		event.setDateCreated(LocalDateTime.now());
 		event.setOrganizer(user);
 		return eventRepo.save(event);
+	}
+	
+	public Event getEventById(long id) {
+		return eventRepo.findById(id).get();
 	}
 	
 

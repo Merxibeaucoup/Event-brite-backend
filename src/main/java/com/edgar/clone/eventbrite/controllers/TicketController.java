@@ -3,33 +3,26 @@ package com.edgar.clone.eventbrite.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edgar.clone.eventbrite.models.Event;
+import com.edgar.clone.eventbrite.models.Ticket;
 import com.edgar.clone.eventbrite.models.user.User;
-import com.edgar.clone.eventbrite.services.EventService;
+import com.edgar.clone.eventbrite.services.TicketService;
 
 @RestController
-@RequestMapping("/api/v1/events")
-public class EventController {
+@RequestMapping("/api/v1/tickets")
+public class TicketController {
 	
 	@Autowired
-	private EventService eventService;
+	private TicketService ticketService;
 	
-	@PostMapping("/new")
-	public ResponseEntity<Event> create(@RequestBody Event event, @AuthenticationPrincipal User user){
-		return ResponseEntity.ok(eventService.createEvent(event, user));
-		
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Event> getById(@PathVariable Long id){
-		return ResponseEntity.ok(eventService.getEventById(id));
+	@PostMapping("/new/{eventId}")
+	public ResponseEntity<Ticket> newTickets(@RequestBody Ticket ticket,@PathVariable Long eventId, @AuthenticationPrincipal User user){		
+		return ResponseEntity.ok(ticketService.ticketsForEvent(ticket, eventId, user));
 	}
 
 }

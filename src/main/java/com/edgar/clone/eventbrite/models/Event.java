@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.edgar.clone.eventbrite.enums.EventCategory;
 import com.edgar.clone.eventbrite.enums.EventType;
 import com.edgar.clone.eventbrite.models.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -64,10 +65,11 @@ public class Event {
 	private Dates eventDateAndTime;
 	
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "event")
+	@OneToOne(cascade = CascadeType.MERGE, mappedBy = "event")
 	private Ticket eventTicket;		
 		
 	@ManyToOne
+	@JsonIgnore
 	private User organizer;
 
 }

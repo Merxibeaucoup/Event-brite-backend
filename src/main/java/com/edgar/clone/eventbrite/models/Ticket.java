@@ -5,8 +5,11 @@ import java.time.LocalDateTime;
 
 import com.edgar.clone.eventbrite.enums.TicketType;
 import com.edgar.clone.eventbrite.models.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,14 +45,19 @@ public class Ticket {
 	@Enumerated(EnumType.STRING)
 	private TicketType ticketType;
 	
-	private LocalDateTime ticketSaleStart;
+	private LocalDateTime ticketSaleStartDate;
 	
-	private LocalDateTime ticketSaleEnd;
+	private LocalDateTime ticketSaleEndDate;
 	
-	@OneToOne(cascade= CascadeType.ALL)
+	@Column(nullable = true)
+	private Boolean isSaleEnded ;
+	
+	@OneToOne(cascade= CascadeType.MERGE)
+	@JsonBackReference
 	private Event event;
 	
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 
 }

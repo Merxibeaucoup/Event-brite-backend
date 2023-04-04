@@ -66,7 +66,8 @@ public class Event {
 	
 	
 	@OneToOne(cascade = CascadeType.MERGE, mappedBy = "event")
-	private Ticket eventTicket;		
+	private Ticket eventTicket;	
+	
 		
 	@ManyToOne
 	@JsonIgnore

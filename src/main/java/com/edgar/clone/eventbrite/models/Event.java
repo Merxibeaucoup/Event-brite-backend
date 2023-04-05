@@ -9,6 +9,7 @@ import com.edgar.clone.eventbrite.enums.EventCategory;
 import com.edgar.clone.eventbrite.enums.EventType;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -66,6 +67,7 @@ public class Event {
 	
 	
 	@OneToOne(cascade = CascadeType.MERGE, mappedBy = "event")
+	@JsonManagedReference
 	private Ticket eventTicket;	
 	
 		

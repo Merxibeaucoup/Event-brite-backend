@@ -1,6 +1,7 @@
 package com.edgar.clone.eventbrite.services;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,16 @@ public class PurchaseService {
 	@Autowired
 	private EventRepository eventRepository;
 	
+
+	
+	
 	
 	public Purchase makePurchase(Purchase purchase, User user) {
 		
 		Optional<Event> event_going =  eventRepository.findByEventTitle(purchase.getEventName());
 		Event event = event_going.get();
+		
+//		Optional<Ticket> ticket_for_event = ticketRepository.findByEvent(event);
 		
 		if(!isExists(purchase.getEventName())) {
 			throw new RuntimeException("Event doesnt Exist");
@@ -53,9 +59,14 @@ public class PurchaseService {
 			}
 			
 			else {
+				
+				
 				purchase.setIsTicketActive(true);
+				purchase.setTicketType(event.getEventTicket().getTicketName());
 				purchase.setEvent(event);
-				purchase.setUser(user);
+				purchase.setTicket(event.getEventTicket());
+				purchase.setUser(user);		
+
 			}
 		}
 		
@@ -64,6 +75,10 @@ public class PurchaseService {
 		eventRepository.save(event);
 		return purchaseRepository.save(purchase);
 		
+	}
+	
+	public List<Purchase> allBoughtByUser(User user){
+		return purchaseRepository.findByUser(user);
 	}
 	
 	

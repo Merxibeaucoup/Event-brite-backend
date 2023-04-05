@@ -33,6 +33,9 @@ public class Purchase {
 	@NotNull
 	private String eventName;	
 	
+	@Column(nullable = true)
+	private String ticketType;
+	
 	@PositiveOrZero
 	private BigDecimal amount;
 	
@@ -45,6 +48,10 @@ public class Purchase {
 	
 	@Column(nullable = true, name ="event_ticket_active")
 	private Boolean isTicketActive;
+	
+	@OneToOne
+	@JsonIgnore
+	private Ticket ticket;
 	
 	@OneToOne
 	@JsonIgnore

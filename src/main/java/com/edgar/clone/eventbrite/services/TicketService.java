@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
 import com.edgar.clone.eventbrite.models.Event;
 import com.edgar.clone.eventbrite.models.Ticket;
 import com.edgar.clone.eventbrite.models.user.User;
@@ -43,7 +44,7 @@ public class TicketService {
 			}
 			
 			else 
-				throw new RuntimeException("Event doesnt exist");
+				throw new EventDoesntExistException("Event doesnt exist");
 			
 		}
 		

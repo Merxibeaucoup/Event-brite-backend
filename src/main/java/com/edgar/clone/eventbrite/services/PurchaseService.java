@@ -123,7 +123,7 @@ public class PurchaseService {
 				.stream()
 				.filter(t -> 
 				t.getEvent().getEventDateAndTime().getEndDate() !=null &&
-				t.getEvent().getEventDateAndTime().getEndDate().isAfter(time_now))			
+				t.getEvent().getEventDateAndTime().getEndDate().isBefore(time_now))			
 				.collect(Collectors.toList());
 		
 				

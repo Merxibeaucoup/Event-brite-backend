@@ -1,10 +1,13 @@
 package com.edgar.clone.eventbrite.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
@@ -16,6 +19,10 @@ import com.edgar.clone.eventbrite.repositories.EventRepository;
 import com.edgar.clone.eventbrite.repositories.PurchaseRepository;
 import com.edgar.clone.eventbrite.requests.UseTicket;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PurchaseService {
 	
@@ -71,27 +78,23 @@ public class PurchaseService {
 				purchase.setUser(user);		
 
 			}
-		}
-		
-		
-		
+		}	
 		eventRepository.save(event);
 		return purchaseRepository.save(purchase);
 		
 	}
-	
+	/** Get All tickets bought by User **/
 	public List<Purchase> allBoughtByUser(User user){
 		return purchaseRepository.findByUser(user);
 	}
 	
-	
+	/** Get Purchased Ticket**/
 	public Purchase getOneTicketPurchasedById(Long id) {
 		return purchaseRepository.findById(id).orElseThrow(()-> new TicketDoesntExistException("You  havent purchased a  ticket for this event") );
 	}
 	
-	
-	public void CheckInTicketAtEvent(UseTicket useTicket, User user) {
-		
+	/** CHeck in user **/
+	public void CheckInTicketAtEvent(UseTicket useTicket, User user) {	
 		Optional<Purchase> purchased_ticket = purchaseRepository.findById(useTicket.getPurchasedTicketid());
 		Purchase purchased = purchased_ticket.get();
 		
@@ -110,7 +113,40 @@ public class PurchaseService {
 	
 	
 	
-//	quartz scheduler to also set tickets active to false if event date is passed 
+//	quartz scheduler to also set tickets active to false if event date is passed  --> runs every minute
+	
+	@Scheduled(cron = "0 0/1 * * * ?") 
+	public void setExpiredEventsTicketToFalse() {
+		LocalDateTime time_now = LocalDateTime.now();
+		 
+		List<Purchase> filter_all_purchased_tickets = purchaseRepository.findAll()
+				.stream()
+				.filter(t -> 
+				t.getEvent().getEventDateAndTime().getEndDate() !=null &&
+				t.getEvent().getEventDateAndTime().getEndDate().isAfter(time_now))			
+				.collect(Collectors.toList());
+		
+				
+	if(filter_all_purchased_tickets.size() > 0) 
+	
+	{
+		
+		filter_all_purchased_tickets
+		.stream()
+		.forEach(e ->{			
+			Optional<Purchase> purchased_ticket = purchaseRepository.findById(e.getId());
+			Purchase purchase = purchased_ticket.get();
+						
+			purchase.setIsTicketActive(false);	
+			
+			purchaseRepository.save(purchase);
+		});
+		
+		log.info("----------------expired ticket found updating ticket to inactive--------------");
+		
+	}
+	
+	}
 	
 	
 	/** utils **/

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.clone.eventbrite.models.Purchase;
 import com.edgar.clone.eventbrite.models.user.User;
-import com.edgar.clone.eventbrite.repositories.PurchaseRepository;
 import com.edgar.clone.eventbrite.requests.UseTicket;
 import com.edgar.clone.eventbrite.services.PurchaseService;
 
@@ -29,8 +28,6 @@ public class PurchaseController {
 	@Autowired
 	private PurchaseService purchaseService;
 	
-	@Autowired
-	private PurchaseRepository purchaseRepository;
 	
 	@PostMapping("/buy")
 	public ResponseEntity<Purchase> buy(@RequestBody Purchase purchase, @AuthenticationPrincipal User user){
@@ -48,14 +45,12 @@ public class PurchaseController {
 		return ResponseEntity.ok(purchaseService.getOneTicketPurchasedById(id));
 	}
 	
+
+	
 // todo:	only user with admin or Organizer role can check people in 
 	@PutMapping("/checkin")
-	public ResponseEntity<?> CheckInTicket(@Valid @RequestBody UseTicket useTicket, @AuthenticationPrincipal User user){
-		
-//		Purchase purchase = purchaseRepository.findById(useTicket.getPurchasedTicketid()).get();		
-		purchaseService.CheckInTicketAtEvent(useTicket, user);	
-//		purchaseRepository.save(purchase);
-		
+	public ResponseEntity<?> CheckInTicket(@Valid @RequestBody UseTicket useTicket, @AuthenticationPrincipal User user){	
+		purchaseService.CheckInTicketAtEvent(useTicket, user);		
 		 return new ResponseEntity<>( HttpStatus.ACCEPTED); 
 	}
 	

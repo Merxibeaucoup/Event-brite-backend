@@ -7,11 +7,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
 import com.edgar.clone.eventbrite.models.Event;
 import com.edgar.clone.eventbrite.models.Purchase;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.repositories.EventRepository;
 import com.edgar.clone.eventbrite.repositories.PurchaseRepository;
+import com.edgar.clone.eventbrite.requests.UseTicket;
 
 @Service
 public class PurchaseService {
@@ -82,10 +85,37 @@ public class PurchaseService {
 	}
 	
 	
+	public Purchase getOneTicketPurchasedById(Long id) {
+		return purchaseRepository.findById(id).orElseThrow(()-> new TicketDoesntExistException("You  havent purchased a  ticket for this event") );
+	}
 	
+	
+	public void CheckInTicketAtEvent(UseTicket useTicket, User user) {
+		
+		Optional<Purchase> purchased_ticket = purchaseRepository.findById(useTicket.getPurchasedTicketid());
+		Purchase purchased = purchased_ticket.get();
+		
+		if(isExists(useTicket.getEventName()) && isExistsTicketPurchased(useTicket.getPurchasedTicketid())) {
+			
+			if(purchased.getIsTicketActive() == false) {
+				throw new TicketIsInactiveException("Ticket is inactive, Event might be closed or ticket has already been used ");
+			}
+			purchased.setIsTicketActive(false);					
+			
+		}
+		
+		purchaseRepository.save(purchased);
+	}
+	
+	
+	
+	
+//	quartz scheduler to also set tickets active to false if event date is passed 
 	
 	
 	/** utils **/
+	
+	/** check if event exists **/
 	private boolean isExists(String name) {
 		if (eventRepository.existsByEventTitle(name)) {
 			return true;
@@ -94,6 +124,16 @@ public class PurchaseService {
 		else 
 			return false;
 		
+	}
+	
+	/** check if ticket is purchased Exists **/
+	private  boolean isExistsTicketPurchased(Long id ) {
+		if(purchaseRepository.existsById(id)) {
+			return true ;
+		}
+		
+		else
+			return false;
 	}
 	
 	

@@ -14,7 +14,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
 	List<Purchase> findByUser(User user);
 
-	boolean existsByEventName(String eventName);
+//	boolean existsById(Long id);
 
 	Optional<Purchase> findByEventName(String eventName); 
 

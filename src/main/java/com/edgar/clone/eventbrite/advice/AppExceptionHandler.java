@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 
 
 
@@ -23,6 +24,16 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
 				HttpStatus.CONFLICT);
 	}
+	
+	
+	@ExceptionHandler(TicketDoesntExistException.class)
+	public ResponseEntity<Object> handleTicketDoesntExist(TicketDoesntExistException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
+				HttpStatus.CONFLICT);
+	}
+	
+	
 	
 
 

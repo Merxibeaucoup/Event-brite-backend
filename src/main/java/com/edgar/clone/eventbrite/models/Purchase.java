@@ -39,11 +39,10 @@ public class Purchase {
 	@PositiveOrZero
 	private BigDecimal amount;
 	
-	
-	@NotNull
-	@Max(value = 2)
+
+	@Max(value = 1)
 	@Positive
-	@Column(name="event_ticket_quantity")
+	@Column(name="event_ticket_quantity", nullable = true )
 	private Integer quantity;
 	
 	@Column(nullable = true, name ="event_ticket_active")

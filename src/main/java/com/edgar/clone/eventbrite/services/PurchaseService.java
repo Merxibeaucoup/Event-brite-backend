@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.PaymentInsufficientException;
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
 import com.edgar.clone.eventbrite.models.Event;
@@ -19,7 +21,6 @@ import com.edgar.clone.eventbrite.repositories.EventRepository;
 import com.edgar.clone.eventbrite.repositories.PurchaseRepository;
 import com.edgar.clone.eventbrite.requests.UseTicket;
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,27 +34,29 @@ public class PurchaseService {
 	@Autowired
 	private EventRepository eventRepository;
 	
+	
+	private final Integer TICKET_QUANTITY = 1;
+	
 
 	
 	
 	
 	public Purchase makePurchase(Purchase purchase, User user) {
 		
-		Optional<Event> event_going =  eventRepository.findByEventTitle(purchase.getEventName());
-		Event event = event_going.get();
+		Optional<Event> event_for =  eventRepository.findByEventTitle(purchase.getEventName());
+		Event event = event_for.get();
 		
-//		Optional<Ticket> ticket_for_event = ticketRepository.findByEvent(event);
-		
-		if(!isExists(purchase.getEventName())) {
-			throw new RuntimeException("Event doesnt Exist");
+		if(!isExists(purchase.getEventName()) && event.getEventTicket().getIsSaleEnded( ) == true) {
+			throw new EventDoesntExistException("Event doesnt Exist");
 		}
 		
 		else {
 				
 			if(event.getEventTicket().getTicketQuantity() < purchase.getQuantity()) {
-				throw new RuntimeException("Tickest quantity requested not sufficient, decrease your ticket amount");
+				throw new RuntimeException("Tickets sold out");
 			}
 			
+			/* update the num of tickets left for event */
 			else {
 				event.getEventTicket().setTicketQuantity(event.getEventTicket().getTicketQuantity() - purchase.getQuantity());
 			}			
@@ -65,12 +68,12 @@ public class PurchaseService {
 			totalPayment =  BigDecimal.valueOf(purchase.getQuantity()).multiply(purchase.getAmount());
 			
 			if(!totalPrice.equals(totalPayment)) {				
-				throw new RuntimeException("Payment not Full, submit full payment to purchase");
+				throw new PaymentInsufficientException("Payment not Full, submit full payment to purchase");
 			}
 			
 			else {
 				
-				
+				purchase.setQuantity(TICKET_QUANTITY);
 				purchase.setIsTicketActive(true);
 				purchase.setTicketType(event.getEventTicket().getTicketName());
 				purchase.setEvent(event);
@@ -111,11 +114,13 @@ public class PurchaseService {
 	}
 	
 	
+
 	
 	
-//	quartz scheduler to also set tickets active to false if event date is passed  --> runs every minute
 	
-	@Scheduled(cron = "0 0/1 * * * ?") 
+/** quartz scheduler to also set tickets active to false if event date is passed  --> runs every 2 seconds **/
+	
+	@Scheduled(cron ="*/2 * * * * *")
 	public void setExpiredEventsTicketToFalse() {
 		LocalDateTime time_now = LocalDateTime.now();
 		 
@@ -123,8 +128,11 @@ public class PurchaseService {
 				.stream()
 				.filter(t -> 
 				t.getEvent().getEventDateAndTime().getEndDate() !=null &&
+				t.getIsTicketActive() == true &&
 				t.getEvent().getEventDateAndTime().getEndDate().isBefore(time_now))			
 				.collect(Collectors.toList());
+		
+		/** if event end date is past and ticket is till active add to list **/
 		
 				
 	if(filter_all_purchased_tickets.size() > 0) 
@@ -136,8 +144,11 @@ public class PurchaseService {
 		.forEach(e ->{			
 			Optional<Purchase> purchased_ticket = purchaseRepository.findById(e.getId());
 			Purchase purchase = purchased_ticket.get();
-						
-			purchase.setIsTicketActive(false);	
+				
+			/** if ticket is still active then set to inactive **/		
+			
+				purchase.setIsTicketActive(false);	
+			
 			
 			purchaseRepository.save(purchase);
 		});
@@ -145,6 +156,8 @@ public class PurchaseService {
 		log.info("----------------expired ticket found updating ticket to inactive--------------");
 		
 	}
+	
+	log.info("----------------Scheduler Running--------------");
 	
 	}
 	

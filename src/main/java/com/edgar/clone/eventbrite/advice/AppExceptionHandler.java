@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.PaymentInsufficientException;
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 
 
@@ -28,9 +29,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(TicketDoesntExistException.class)
 	public ResponseEntity<Object> handleTicketDoesntExist(TicketDoesntExistException ex, WebRequest request) {
-
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
 				HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(PaymentInsufficientException.class)
+	public ResponseEntity<Object> handlePaymentInsufficient(PaymentInsufficientException ex, WebRequest request) {
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now()),
+				HttpStatus.FORBIDDEN);
 	}
 	
 	

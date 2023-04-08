@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.clone.eventbrite.models.Event;
-import com.edgar.clone.eventbrite.models.Venue;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.services.EventService;
 

@@ -14,11 +14,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	List<Event> findByOrganizer(User organizer);
 	
-	Optional<Event> findByEventTitle(String eventTitle);
-	
+	Optional<Event> findByEventTitle(String eventTitle);	
 	boolean existsByEventTitle (String eventTitle);
-
+	
+	Optional<Event> findByEventTown(String eventTown);	
 	List<Event> findByEventVenue(String eventVenueAddressTown);
+	boolean existsByEventTown (String eventTown);
 	
 
 

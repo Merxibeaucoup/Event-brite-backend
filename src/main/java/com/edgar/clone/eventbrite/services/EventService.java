@@ -31,5 +31,11 @@ public class EventService {
 	public List<Event> organizerEvents(User organizer){
 		return eventRepo.findByOrganizer(organizer);
 	}
+	
+	
+	
+	public List<Event> findbyVenueTown(String town){		
+		return eventRepo.findByEventVenue(town);
+	}
 
 }

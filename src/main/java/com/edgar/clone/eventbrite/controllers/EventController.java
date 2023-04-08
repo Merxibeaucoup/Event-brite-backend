@@ -1,5 +1,7 @@
 package com.edgar.clone.eventbrite.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.clone.eventbrite.models.Event;
+import com.edgar.clone.eventbrite.models.Venue;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.services.EventService;
 
@@ -30,6 +33,12 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Event> getById(@PathVariable Long id){
 		return ResponseEntity.ok(eventService.getEventById(id));
+	}
+	
+	
+	@GetMapping("/{town}")
+	public ResponseEntity<List<Event>> findEventByTown(@PathVariable String town){
+		return ResponseEntity.ok(eventService.findbyVenueTown(town));
 	}
 
 }

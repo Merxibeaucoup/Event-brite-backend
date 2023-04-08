@@ -35,6 +35,10 @@ public class EventService {
 		return eventRepo.findByEventVenue(town);
 	}
 	
+	/**
+	 * to do : add another scheduler to set all ended events state to inactive
+	 * **/
+	
 	
 
 //	private boolean isExistsEventTown(String town) {

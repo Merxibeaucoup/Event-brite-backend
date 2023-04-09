@@ -1,22 +1,23 @@
 # EventBrite Backend
 
-This backend App was built to carefully mimic the main functionalities of eventbrite's website .. added some interesting twists of mine too
+This backend App was built to carefully mimic most of the main functionalities of eventbrite's website .. added some interesting twists of mine too
 
 User can :
--register,
--login ,
--logout -> using spring security and JWT for auth.
 
-User can (organizer) :
+- register,
+- login ,
+- logout -> using spring security and JWT for auth.
 
-- create
+Users can become organizers and :
+
+- create events
 - create tickets specifically for type of event
 - check in other users for created event
 
-  - other users can:
-    - purchase tickets
-    - find events by town
-    - find events by organizer
+- other users can:
+  - purchase tickets
+  - find events by town
+  - find events by organizer
 
 ## Under The Hood
 
@@ -31,4 +32,5 @@ coming soon: email buyer a reciept after purchasing a ticket.
 - Hibernate
 - PostgreSQL
 - Lombok
+- JavaMail API
 - JUnit, Mockito

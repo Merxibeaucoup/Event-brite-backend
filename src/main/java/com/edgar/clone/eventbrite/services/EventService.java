@@ -30,9 +30,8 @@ public class EventService {
 		return eventRepo.findByOrganizer(organizer);
 	}
 
-	public List<Event> findbyVenueTown(String town) {
-
-		return eventRepo.findByEventVenue(town);
+	public List<Event> findbyVenueTown(String town) {		
+		return eventRepo.findByEventVenue_EventVenueAddressTown(town);
 	}
 	
 	/**

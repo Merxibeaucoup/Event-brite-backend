@@ -35,6 +35,7 @@ public class PurchaseService {
 	private EventRepository eventRepository;
 	
 	
+	/** for one ticket per order **/
 	private final Integer TICKET_QUANTITY = 1;
 	
 
@@ -51,7 +52,8 @@ public class PurchaseService {
 		}
 		
 		else {
-				
+			purchase.setQuantity(TICKET_QUANTITY);	
+			
 			if(event.getEventTicket().getTicketQuantity() < purchase.getQuantity()) {
 				throw new RuntimeException("Tickets sold out");
 			}
@@ -73,7 +75,7 @@ public class PurchaseService {
 			
 			else {
 				
-				purchase.setQuantity(TICKET_QUANTITY);
+				
 				purchase.setIsTicketActive(true);
 				purchase.setTicketType(event.getEventTicket().getTicketName());
 				purchase.setEvent(event);

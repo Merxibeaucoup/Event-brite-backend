@@ -17,9 +17,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Optional<Event> findByEventTitle(String eventTitle);	
 	boolean existsByEventTitle (String eventTitle);
 	
-	Optional<Event> findByEventTown(String eventTown);	
-	List<Event> findByEventVenue(String eventVenueAddressTown);
-	boolean existsByEventTown (String eventTown);
+	
+	List<Event> findByEventVenue_EventVenueAddressTown(String town);
+	boolean existsByEventVenue (String town);
 	
 
 

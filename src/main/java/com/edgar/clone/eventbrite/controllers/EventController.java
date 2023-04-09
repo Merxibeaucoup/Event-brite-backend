@@ -29,13 +29,13 @@ public class EventController {
 		
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/id/{id}")
 	public ResponseEntity<Event> getById(@PathVariable Long id){
 		return ResponseEntity.ok(eventService.getEventById(id));
 	}
 	
 	
-	@GetMapping("/{town}")
+	@GetMapping("/town/{town}")
 	public ResponseEntity<List<Event>> findEventByTown(@PathVariable String town){
 		return ResponseEntity.ok(eventService.findbyVenueTown(town));
 	}

@@ -26,6 +26,9 @@ public class Venue {
 	@Column(name="town")
 	private String eventVenueAddressTown;
 	
+	@Column(name="state")
+	private String eventVenueAddressState;
+	
 	@Column(name="country")
 	private String eventVenueAddressCountry;
 	

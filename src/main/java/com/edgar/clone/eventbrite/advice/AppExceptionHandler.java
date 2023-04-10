@@ -12,6 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.PaymentInsufficientException;
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
+import com.edgar.clone.eventbrite.exceptions.TicketsSoldOutException;
 
 
 
@@ -23,18 +25,30 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleEventDoesntExist(EventDoesntExistException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
-				HttpStatus.CONFLICT);
+				HttpStatus.NOT_FOUND);
 	}
 	
 	
 	@ExceptionHandler(TicketDoesntExistException.class)
 	public ResponseEntity<Object> handleTicketDoesntExist(TicketDoesntExistException ex, WebRequest request) {
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
-				HttpStatus.CONFLICT);
+				HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(PaymentInsufficientException.class)
 	public ResponseEntity<Object> handlePaymentInsufficient(PaymentInsufficientException ex, WebRequest request) {
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now()),
+				HttpStatus.FORBIDDEN);
+	}
+	
+	@ExceptionHandler(TicketIsInactiveException.class)
+	public ResponseEntity<Object> handleTicketIsInactiveException(TicketIsInactiveException ex, WebRequest request) {
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
+				HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(TicketsSoldOutException.class)
+	public ResponseEntity<Object> handleTicketIsSoldOutException(TicketsSoldOutException ex, WebRequest request) {
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now()),
 				HttpStatus.FORBIDDEN);
 	}

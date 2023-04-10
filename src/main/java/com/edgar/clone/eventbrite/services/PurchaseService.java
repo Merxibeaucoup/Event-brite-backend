@@ -14,6 +14,7 @@ import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.PaymentInsufficientException;
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
+import com.edgar.clone.eventbrite.exceptions.TicketsSoldOutException;
 import com.edgar.clone.eventbrite.models.Event;
 import com.edgar.clone.eventbrite.models.Purchase;
 import com.edgar.clone.eventbrite.models.user.User;
@@ -47,7 +48,7 @@ public class PurchaseService {
 		Optional<Event> event_for =  eventRepository.findByEventTitle(purchase.getEventName());
 		Event event = event_for.get();
 		
-		if(!isExists(purchase.getEventName()) && event.getEventTicket().getIsSaleEnded( ) == true) {
+		if(!isExists(purchase.getEventName()) && event.getEventTicket().getIsSaleEnded( ) == true && event.getIsEventEnded()==true) {
 			throw new EventDoesntExistException("Event doesnt Exist");
 		}
 		
@@ -55,7 +56,7 @@ public class PurchaseService {
 			purchase.setQuantity(TICKET_QUANTITY);	
 			
 			if(event.getEventTicket().getTicketQuantity() < purchase.getQuantity()) {
-				throw new RuntimeException("Tickets sold out");
+				throw new TicketsSoldOutException("Tickets sold out");
 			}
 			
 			/* update the num of tickets left for event */
@@ -159,7 +160,7 @@ public class PurchaseService {
 		
 	}
 	
-	log.info("----------------Scheduler Running--------------");
+	log.info("----------------Purchase Scheduler Running--------------");
 	
 	}
 	

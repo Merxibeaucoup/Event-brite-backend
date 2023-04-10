@@ -54,6 +54,9 @@ public class Event {
 	private String eventDescription;
 	
 	@Column(nullable = true)
+	private Boolean isEventEnded;
+	
+	@Column(nullable = true)
 	private List<String> tags;
 	
 	@CreationTimestamp

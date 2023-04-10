@@ -4,9 +4,8 @@ This backend App was built to carefully mimic most of the main functionalities o
 
 ## Entity Relationship Design (ERD):
 
-link : [https://drive.google.com/file/d/1qb7bFaIcIgAPtbLbdWXLl_9qBGn5lBK4/view?usp=share_link]
-
-... still in the works
+-still in the works
+link : [google drive link](https://drive.google.com/file/d/1qb7bFaIcIgAPtbLbdWXLl_9qBGn5lBK4/view?usp=share_link)
 
 User can :
 

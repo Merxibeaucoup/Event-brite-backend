@@ -6,6 +6,8 @@ This backend App was built to carefully mimic most of the main functionalities o
 
 link : [https://drive.google.com/file/d/1qb7bFaIcIgAPtbLbdWXLl_9qBGn5lBK4/view?usp=share_link]
 
+... still in the works
+
 User can :
 
 - register,

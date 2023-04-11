@@ -8,8 +8,8 @@ import com.edgar.clone.eventbrite.models.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,7 +39,7 @@ public class Ticket {
 	@NotNull
 	private Integer ticketQuantity;
 	
-	@NotNull
+	@Nullable
 	private BigDecimal ticketPrice;
 	
 	@Enumerated(EnumType.STRING)
@@ -49,8 +49,11 @@ public class Ticket {
 	
 	private LocalDateTime ticketSaleEndDate;
 	
-	@Column(nullable = true)
+	@Nullable
 	private Boolean isSaleEnded ;
+	
+	@Nullable
+	private Boolean isTicketSoldOut;
 	
 	@OneToOne(cascade= CascadeType.MERGE)
 	@JsonBackReference

@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.NotOwnerOfEventException;
 import com.edgar.clone.eventbrite.exceptions.PaymentInsufficientException;
 import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
@@ -49,6 +50,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(TicketsSoldOutException.class)
 	public ResponseEntity<Object> handleTicketIsSoldOutException(TicketsSoldOutException ex, WebRequest request) {
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now()),
+				HttpStatus.FORBIDDEN);
+	}
+	
+	
+	@ExceptionHandler(NotOwnerOfEventException.class)
+	public ResponseEntity<Object> handleNotOwnerOfEventException(NotOwnerOfEventException ex, WebRequest request) {
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now()),
 				HttpStatus.FORBIDDEN);
 	}

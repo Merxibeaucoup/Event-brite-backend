@@ -39,7 +39,6 @@ public class PurchaseService {
 	/** for one ticket per order **/
 	private final Integer TICKET_QUANTITY = 1;
 	
-
 	
 	
 	
@@ -48,8 +47,8 @@ public class PurchaseService {
 		Optional<Event> event_for =  eventRepository.findByEventTitle(purchase.getEventName());
 		Event event = event_for.get();
 		
-		if(!isExists(purchase.getEventName()) && event.getEventTicket().getIsSaleEnded( ) == true && event.getIsEventEnded()==true) {
-			throw new EventDoesntExistException("Event doesnt Exist");
+		if(!isExists(purchase.getEventName()) && event.getEventTicket().getIsSaleEnded( ) == true && event.getIsEventEnded()==true && event.getEventTicket().getIsTicketSoldOut()==true) {
+			throw new EventDoesntExistException("cant make purchase -> Event doesnt Exist, Ticket sale has ended or Tickets are soldout ");
 		}
 		
 		else {
@@ -71,7 +70,7 @@ public class PurchaseService {
 			totalPayment =  BigDecimal.valueOf(purchase.getQuantity()).multiply(purchase.getAmount());
 			
 			if(!totalPrice.equals(totalPayment)) {				
-				throw new PaymentInsufficientException("Payment not Full, submit full payment to purchase");
+				throw new PaymentInsufficientException("Wrong purchase amount entered, submit correct payment to purchase");
 			}
 			
 			else {
@@ -156,7 +155,7 @@ public class PurchaseService {
 			purchaseRepository.save(purchase);
 		});
 		
-		log.info("----------------expired ticket found updating ticket to inactive--------------");
+		log.info("---------------- ticket with ended event found updating ticket isActive to false--------------");
 		
 	}
 	

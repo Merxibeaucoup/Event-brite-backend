@@ -1,6 +1,7 @@
 package com.edgar.clone.eventbrite.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class TicketService {
 	}
 	
 	
-//	todo: cron job to set ticket to sold out
+/** cron job to set ticket to sold out **/
 	@Scheduled(cron ="*/2 * * * * *")
 	public void setTicketToSoldOut() {
 		List<Ticket> filter_all_tickets = ticketepRepository
@@ -92,7 +93,39 @@ public class TicketService {
 				
 			});
 		}
-		log.info("----------------Ticket Scheduler Running--------------");
+		log.info("----------------Ticket Scheduler `SOLD OUT` Running--------------");
+	}
+	
+	
+	/** cron job to set ticket to sale to ended **/
+	@Scheduled(cron ="*/2 * * * * *")
+	public void setTicketSaleEnded() {
+		
+		LocalDateTime today  = LocalDateTime.now();
+		
+		List<Ticket> filter_all_tickets = ticketepRepository
+				.findAll()
+				.stream()
+				.filter(t -> t.getTicketSaleEndDate() !=null
+				&& t.getIsSaleEnded() == false
+				&& t.getTicketSaleEndDate().isBefore(today))
+				.collect(Collectors.toList());	
+		
+		if(filter_all_tickets.size()>0) {
+			filter_all_tickets
+			.stream()
+			.forEach(s ->{
+				Optional<Ticket> ticket_found = ticketepRepository.findById(s.getId());
+				Ticket ticket = ticket_found.get();	
+				
+				ticket.setIsSaleEnded(true);
+				ticketepRepository.save(ticket);
+				
+				log.info("---------------- Found ticket with sale ended date , setting isSaleEnded to true --------------");
+			});
+		}
+		log.info("----------------Ticket Scheduler `SALE ENDED` Running--------------");
+		
 	}
 
 }

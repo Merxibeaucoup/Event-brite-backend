@@ -1,10 +1,12 @@
 package com.edgar.clone.eventbrite.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.edgar.clone.eventbrite.models.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,6 +49,9 @@ public class Purchase {
 	
 	@Column(nullable = true, name ="event_ticket_active")
 	private Boolean isTicketActive;
+	
+	@Nullable
+	private LocalDateTime purchaseDate;
 	
 	@OneToOne
 	@JsonIgnore

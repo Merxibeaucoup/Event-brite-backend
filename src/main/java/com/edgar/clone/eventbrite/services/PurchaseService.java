@@ -16,6 +16,7 @@ import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.TicketIsInactiveException;
 import com.edgar.clone.eventbrite.exceptions.TicketsSoldOutException;
 import com.edgar.clone.eventbrite.models.Event;
+import com.edgar.clone.eventbrite.models.MailerModel;
 import com.edgar.clone.eventbrite.models.Purchase;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.repositories.EventRepository;
@@ -34,6 +35,9 @@ public class PurchaseService {
 	
 	@Autowired
 	private EventRepository eventRepository;
+	
+	@Autowired
+	private MailerService mailerService;
 	
 	
 	/** for one ticket per order **/
@@ -75,7 +79,7 @@ public class PurchaseService {
 			
 			else {
 				
-				
+				purchase.setPurchaseDate(LocalDateTime.now());
 				purchase.setIsTicketActive(true);
 				purchase.setTicketType(event.getEventTicket().getTicketName());
 				purchase.setEvent(event);
@@ -83,7 +87,22 @@ public class PurchaseService {
 				purchase.setUser(user);		
 
 			}
-		}	
+		}
+		
+		MailerModel mailer = new MailerModel();
+		
+		Integer tick_num = event.getEventTicket().getTicketQuantity()+1;
+		
+		mailer.setEmailFrom("clone-eventbrite@mailer.com");
+		mailer.setEmailTo(user.getEmail());	
+		mailer.setSubject("Thank you for your purchase, here is your ticket for : "+ event.getEventTitle());
+		mailer.setMessage("\ud83e\udd73 \ud83e\udd73 \n"
+				+ "your ticket number is :" + tick_num + " \n"+
+				" enjoy the event \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
+				);
+		
+		
+		mailerService.sendEmail(mailer);		
 		eventRepository.save(event);
 		return purchaseRepository.save(purchase);
 		

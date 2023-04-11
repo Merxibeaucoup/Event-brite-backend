@@ -30,7 +30,9 @@ Users can become organizers and :
 
 implemented multiple Schedulers to run 24/7 (2-3 sec threads) to make changes in the database automatically
 
-coming soon: email buyer a reciept after purchasing a ticket.
+emails buyer a reciept after purchasing a ticket.
+
+todo: use barcode in the email content
 
 ## Technologies
 

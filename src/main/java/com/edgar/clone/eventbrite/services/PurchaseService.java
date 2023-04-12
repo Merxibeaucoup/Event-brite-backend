@@ -89,17 +89,47 @@ public class PurchaseService {
 			}
 		}
 		
+		
+		/** generate ref number **/
+		boolean refNumberTaken = true;
+		String refNumber ="";
+		String eventAbv="";
+		
+		while(refNumberTaken) {			
+			eventAbv = purchase.getEventName().substring(0, 4).toUpperCase();			
+			refNumber = eventAbv + generateRefNumber();
+			
+			if(!purchaseRepository.findByTicketReferenceNumber(refNumber).isPresent()) {
+				refNumberTaken = false;
+			}
+		}
+		
+		purchase.setTicketReferenceNumber(refNumber);
+		
+		/** mailer section **/
 		MailerModel mailer = new MailerModel();
 		
-		Integer tick_num = event.getEventTicket().getTicketQuantity()+1;
+		
 		
 		mailer.setEmailFrom("clone-eventbrite@mailer.com");
 		mailer.setEmailTo(user.getEmail());	
 		mailer.setSubject("Thank you for your purchase, here is your ticket for : "+ event.getEventTitle());
-		mailer.setMessage("\ud83e\udd73 \ud83e\udd73 \n"
-				+ "your ticket number is :" + tick_num + " \n"+
-				" enjoy the event \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
+		mailer.setMessage("Hi "+ user.getFirstname() +", \n\n"
+				+ "\n Thank you for your purchase, your ticket reference number is  :" + purchase.getTicketReferenceNumber() + " \n"+
+				" \n Event Details: "+
+				"\n\n Event Name : "+ purchase.getEventName()+
+				"\n Event Date and time : "+ purchase.getEvent().getEventDateAndTime().getStartDate()+" - "+ purchase.getEvent().getEventDateAndTime().getEndDate()+
+				"\n\n Event Location : \n"+ purchase.getEvent().getEventVenue().getEventVenue()+
+				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressNumber()+" "+ purchase.getEvent().getEventVenue().getEventVenueAddressStreet()+
+				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressTown()+
+				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressCountry()+
+				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressZipcode()+
+				"\n\n\n\n"+
+				" Organised by : "+purchase.getEvent().getOrganizer().getFirstname()+" "+ purchase.getEvent().getOrganizer().getLastname()+
+				" \n\n\n enjoy the event \n\n \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
 				);
+		
+		
 		
 		
 		mailerService.sendEmail(mailer);		
@@ -107,6 +137,8 @@ public class PurchaseService {
 		return purchaseRepository.save(purchase);
 		
 	}
+	
+	
 	/** Get All tickets bought by User **/
 	public List<Purchase> allBoughtByUser(User user){
 		return purchaseRepository.findByUser(user);
@@ -132,6 +164,16 @@ public class PurchaseService {
 		}
 		
 		purchaseRepository.save(purchased);
+	}
+	
+	
+	
+	/** Generates Reference number **/
+	private Long generateRefNumber() {
+		
+		long generatedNumber = (long)Math.floor(Math.random() * 1_000_000_000);
+		
+		return   generatedNumber;
 	}
 	
 	

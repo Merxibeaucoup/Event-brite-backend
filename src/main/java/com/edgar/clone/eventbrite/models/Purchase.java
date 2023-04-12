@@ -35,12 +35,14 @@ public class Purchase {
 	@NotNull
 	private String eventName;	
 	
+	@Nullable
+	private String ticketReferenceNumber;
+	
 	@Column(nullable = true)
 	private String ticketType;
 	
 	@PositiveOrZero
-	private BigDecimal amount;
-	
+	private BigDecimal amount;	
 
 	@Max(value = 1)
 	@Positive

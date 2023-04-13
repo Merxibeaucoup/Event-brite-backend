@@ -96,7 +96,7 @@ public class PurchaseService {
 		String eventAbv="";
 		
 		while(refNumberTaken) {			
-			eventAbv = purchase.getEventName().substring(0, 4).toUpperCase();			
+			eventAbv = purchase.getEventName().substring(0, 3).toUpperCase();			
 			refNumber = eventAbv + generateRefNumber();
 			
 			if(!purchaseRepository.findByTicketReferenceNumber(refNumber).isPresent()) {
@@ -115,17 +115,17 @@ public class PurchaseService {
 		mailer.setEmailTo(user.getEmail());	
 		mailer.setSubject("Thank you for your purchase, here is your ticket for : "+ event.getEventTitle());
 		mailer.setMessage("Hi "+ user.getFirstname() +", \n\n"
-				+ "\n Thank you for your purchase, your ticket reference number is  :" + purchase.getTicketReferenceNumber() + " \n"+
-				" \n Event Details: "+
-				"\n\n Event Name : "+ purchase.getEventName()+
-				"\n Event Date and time : "+ purchase.getEvent().getEventDateAndTime().getStartDate()+" - "+ purchase.getEvent().getEventDateAndTime().getEndDate()+
-				"\n\n Event Location : \n"+ purchase.getEvent().getEventVenue().getEventVenue()+
+				+ "\nThank you for your purchase, your ticket reference number is  :" + purchase.getTicketReferenceNumber() + " \n"+
+				" \nEvent Details: "+
+				"\n\nEvent Name : "+ purchase.getEventName()+
+				"\nEvent Date and time : "+ purchase.getEvent().getEventDateAndTime().getStartDate()+" - "+ purchase.getEvent().getEventDateAndTime().getEndDate()+
+				"\n\nEvent Location : \n"+ purchase.getEvent().getEventVenue().getEventVenue()+
 				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressNumber()+" "+ purchase.getEvent().getEventVenue().getEventVenueAddressStreet()+
 				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressTown()+
 				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressCountry()+
 				"\n"+purchase.getEvent().getEventVenue().getEventVenueAddressZipcode()+
 				"\n\n\n\n"+
-				" Organised by : "+purchase.getEvent().getOrganizer().getFirstname()+" "+ purchase.getEvent().getOrganizer().getLastname()+
+				"  Organised by : "+purchase.getEvent().getOrganizer().getFirstname()+" "+ purchase.getEvent().getOrganizer().getLastname()+
 				" \n\n\n enjoy the event \n\n \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
 				);
 		

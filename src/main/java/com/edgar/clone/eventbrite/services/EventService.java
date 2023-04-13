@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
+import com.edgar.clone.eventbrite.exceptions.NotOwnerOfEventException;
 import com.edgar.clone.eventbrite.models.Event;
+import com.edgar.clone.eventbrite.models.user.Role;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.repositories.EventRepository;
 
@@ -21,7 +24,8 @@ public class EventService {
 
 	@Autowired
 	private EventRepository eventRepo;
-
+	
+	/** create event **/
 	public Event createEvent(Event event, User user) {
 		event.setDateCreated(LocalDateTime.now());
 		event.setIsEventEnded(false);
@@ -29,22 +33,63 @@ public class EventService {
 		return eventRepo.save(event);
 	}
 
-	public Event getEventById(long id) {
+	/** get event by id **/
+	public Event getEventById(Long id) {
 		return eventRepo.findById(id).get();
 	}
+	
+	/** get event by title **/
+	public Event getEventByTitle(String eventTitle) {	
+		Event event = eventRepo.findByEventTitle(eventTitle)
+				.orElseThrow(()-> new EventDoesntExistException("Event with name :: "+ eventTitle +" does not exist"));
+		return event;	
+	}
+	
+	
+	/** update event by id **/
+	public Event updateEventByid(Long id, User user) {	
+		Event event_by_id = eventRepo.findById(id)
+				.orElseThrow(()-> new EventDoesntExistException("Event with id :: "+ id +" does not exist"));		
+		event_by_id.setId(id);
+		
+		if(user.getRole() != Role.ADMIN || user != event_by_id.getOrganizer()) {
+			throw new NotOwnerOfEventException("Cant delete event, you are not the owner of the event with id :: "+ id );
+		}
+		else {
+			return eventRepo.save(event_by_id);
+		}		
+	}
+	
+	/** delete event by id **/
+	public void deleteEventById(Long id, User user) {
+			
+		Event event = eventRepo.findById(id)
+				.orElseThrow(()-> new EventDoesntExistException("Event with id :: "+ id +" does not exist"));	
+		
+		if(user.getRole()!= Role.ADMIN || user != event.getOrganizer()) {
+			throw new NotOwnerOfEventException("Cant delete event, you are not the owner of the event with id :: "+ id );
+		}
+		else {			
+			eventRepo.deleteById(id);
+			
+		}
+			
+		
+	}
 
+	
+	/** get event belonging to organizer **/
 	public List<Event> organizerEvents(User organizer) {
 		return eventRepo.findByOrganizer(organizer);
 	}
-
+	
+	
+	/** get list of events by event town name **/
 	public List<Event> findbyVenueTown(String town) {		
 		return eventRepo.findByEventVenue_EventVenueAddressTown(town);
 	}
 	
-	/**
-	 * to do : add another scheduler to set all ended events state to inactive
-	 * **/
-	
+	/** scheduler to set event isEnded to true if -> event end date passed **/	
 	@Scheduled(cron ="*/3 * * * * *")
 	public void setEventsToInactive() {
 		

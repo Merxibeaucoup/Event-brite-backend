@@ -53,7 +53,7 @@ public class EventService {
 		event_by_id.setId(id);
 		
 		if(user.getRole() != Role.ADMIN || user != event_by_id.getOrganizer()) {
-			throw new NotOwnerOfEventException("Cant delete event, you are not the owner of the event with id :: "+ id );
+			throw new NotOwnerOfEventException("Cant update event, you are not and ADMIN or the owner of the event with id :: "+ id );
 		}
 		else {
 			return eventRepo.save(event_by_id);
@@ -67,7 +67,7 @@ public class EventService {
 				.orElseThrow(()-> new EventDoesntExistException("Event with id :: "+ id +" does not exist"));	
 		
 		if(user.getRole()!= Role.ADMIN || user != event.getOrganizer()) {
-			throw new NotOwnerOfEventException("Cant delete event, you are not the owner of the event with id :: "+ id );
+			throw new NotOwnerOfEventException("Cant delete event, you are not an ADMIN or the owner of the event with id :: "+ id );
 		}
 		else {			
 			eventRepo.deleteById(id);

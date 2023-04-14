@@ -49,8 +49,8 @@ public class EventController {
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<Event> updateEventById(@PathVariable Long id, @AuthenticationPrincipal User user){
-		return ResponseEntity.ok(eventService.updateEventByid(id, user));
+	public ResponseEntity<Event> updateEventById(@PathVariable Long id,@RequestBody Event event, @AuthenticationPrincipal User user){
+		return ResponseEntity.ok(eventService.updateEventByid(id,event, user));
 	}
 	
 	@DeleteMapping("/delete/{id}")

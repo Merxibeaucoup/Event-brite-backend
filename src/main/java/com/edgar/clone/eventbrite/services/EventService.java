@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.NotOwnerOfEventException;
 import com.edgar.clone.eventbrite.models.Event;
-import com.edgar.clone.eventbrite.models.user.Role;
 import com.edgar.clone.eventbrite.models.user.User;
 import com.edgar.clone.eventbrite.repositories.EventRepository;
 
@@ -47,34 +46,28 @@ public class EventService {
 	
 	
 	/** update event by id **/
-	public Event updateEventByid(Long id, User user) {	
-		Event event_by_id = eventRepo.findById(id)
-				.orElseThrow(()-> new EventDoesntExistException("Event with id :: "+ id +" does not exist"));		
-		event_by_id.setId(id);
-		
-		if(user.getRole() != Role.ADMIN || user != event_by_id.getOrganizer()) {
-			throw new NotOwnerOfEventException("Cant update event, you are not and ADMIN or the owner of the event with id :: "+ id );
+	public Event updateEventByid(Long id,Event event, User user) {	
+										
+		if(eventRepo.findById(id).isPresent()) {
+			return eventRepo.save(event);		
 		}
-		else {
-			return eventRepo.save(event_by_id);
-		}		
+		else 
+			throw new EventDoesntExistException("Event with id :: "+ id +" does not exist");	
+	
 	}
+	
+	
 	
 	/** delete event by id **/
 	public void deleteEventById(Long id, User user) {
-			
-		Event event = eventRepo.findById(id)
-				.orElseThrow(()-> new EventDoesntExistException("Event with id :: "+ id +" does not exist"));	
-		
-		if(user.getRole()!= Role.ADMIN || user != event.getOrganizer()) {
-			throw new NotOwnerOfEventException("Cant delete event, you are not an ADMIN or the owner of the event with id :: "+ id );
+				
+		if(eventRepo.findById(id).isPresent()) {
+			eventRepo.deleteById(id);
 		}
 		else {			
-			eventRepo.deleteById(id);
-			
+			throw new NotOwnerOfEventException("Cant delete event, you are not an ADMIN or the owner of the event with id :: "+ id );		
 		}
 			
-		
 	}
 
 	

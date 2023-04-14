@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.edgar.clone.eventbrite.enums.TicketType;
 import com.edgar.clone.eventbrite.exceptions.EventDoesntExistException;
 import com.edgar.clone.eventbrite.exceptions.NotOwnerOfEventException;
+import com.edgar.clone.eventbrite.exceptions.TicketDoesntExistException;
 import com.edgar.clone.eventbrite.models.Event;
 import com.edgar.clone.eventbrite.models.Ticket;
 import com.edgar.clone.eventbrite.models.user.User;
@@ -34,8 +35,9 @@ public class TicketService {
 	/** for free or donation based events **/
 	private final BigDecimal FREE_OR_DONATION = new BigDecimal("0.00");
 	
-	public Ticket ticketsForEvent(Ticket ticket, long EventId, User user) {
-		
+	
+	/** new ticket for event **/
+	public Ticket ticketsForEvent(Ticket ticket, long EventId, User user) {		
 		Optional<Event> event = eventRepository.findById(EventId);		
 		if((event.get().getOrganizer().getId() == user.getId())) {				
 			if(event.isPresent()) {							
@@ -61,6 +63,17 @@ public class TicketService {
 		else 
 			throw new NotOwnerOfEventException("you are not the owner of this event , cant create tickets");
 			
+	}
+	
+	
+	public Ticket updateTicket(Long id, User user) {
+		
+		Optional<Ticket> ticket_up = ticketepRepository.findById(id);	
+		Ticket ticket_t = ticket_up.orElseThrow(()-> new TicketDoesntExistException(" Ticket with id :: "+id+" doesnt exist"));
+		
+		ticket_t.setId(id);	
+		return ticketepRepository.save(ticket_t);				
+	
 	}
 	
 	

@@ -55,7 +55,7 @@ public class EventController {
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteEventByid(@PathVariable Long id, @AuthenticationPrincipal User user){		
-		 eventService.deleteEventById(id, user);
+		 eventService.deleteEventById(id);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}

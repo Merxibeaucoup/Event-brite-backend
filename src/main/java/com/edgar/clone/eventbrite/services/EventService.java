@@ -49,6 +49,10 @@ public class EventService {
 	public Event updateEventByid(Long id,Event event, User user) {	
 										
 		if(eventRepo.findById(id).isPresent()) {
+			event.setOrganizer(user);
+			
+			if(event.getOrganizer() != user) {throw  new NotOwnerOfEventException("Cant delete event, you are not the owner of the event with id :: "+ id );}	
+			
 			return eventRepo.save(event);		
 		}
 		else 
@@ -59,13 +63,13 @@ public class EventService {
 	
 	
 	/** delete event by id **/
-	public void deleteEventById(Long id, User user) {
+	public void deleteEventById(Long id) {
 				
 		if(eventRepo.findById(id).isPresent()) {
 			eventRepo.deleteById(id);
 		}
 		else {			
-			throw new NotOwnerOfEventException("Cant delete event, you are not an ADMIN or the owner of the event with id :: "+ id );		
+			throw  new EventDoesntExistException("Event with id :: "+ id +" does not exist");
 		}
 			
 	}
